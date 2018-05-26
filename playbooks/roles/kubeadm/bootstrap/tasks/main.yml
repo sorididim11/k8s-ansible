@@ -19,8 +19,9 @@
       path: ~/.kube
       state: directory
     
-  - copy: 
-      become: yes
+  - name: copy admin.conf
+    become: yes
+    copy: 
       src: /etc/kubernetes/admin.conf
       dest: ~/.kube/config
       owner: "{{ansible_user_id}}"
