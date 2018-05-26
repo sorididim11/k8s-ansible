@@ -37,6 +37,10 @@
     - net.bridge.bridge-nf-call-iptables
 
 
+- name: swap off 
+  become: yes
+  command:  swapoff -a
+
 - name: Configure cgroup drvier on masters
   block:
     - name:
@@ -47,9 +51,4 @@
 
     - name: Reload kubelet
       systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
-  when: inventory_hostname in groups['k8s_masters']
 
-
-- name: swap off 
-  become: yes
-  command:  swapoff -a
