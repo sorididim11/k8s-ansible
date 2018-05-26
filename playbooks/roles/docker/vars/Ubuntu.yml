@@ -1,0 +1,14 @@
+---
+
+# variables for both docker-ce and docker-ee
+docker_ce_repo: https://download.docker.com/linux/centos/docker-ce.repo
+docker_ee_url: https://storebits.docker.com/ee/trial/sub-76448604-5b0e-4b3f-a117-6f8545f8633b
+docker_ee_key: "{{ docker_ee_url }}/ubuntu/gpg"
+docker_ee_repo: "{{ docker_ee_url }}/ubuntu/docker-ee.repo"
+docker_repo:
+
+docker_required_utils:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common

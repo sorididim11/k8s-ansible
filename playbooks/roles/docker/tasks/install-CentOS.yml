@@ -1,0 +1,33 @@
+---
+
+
+# something wrong with include_vars, if i use expresseion above directly here so. use variable using set_fact
+- include_vars: CentOS.yml
+
+- name: Install required utils for docker
+  yum: name={{item}} state=present
+  with_items: "{{ docker_required_utils }}"
+
+
+- name: Add DOCKER-EE-URL to yum variable
+  lineinfile:
+    dest: /etc/yum/vars/dockerurl
+    state: present
+    line: "{{docker_ee_url}}/centos"
+    create: yes
+  when: docker_package == 'docker-ee'
+
+
+- name: Add the YUM Docker repository in CentOS
+  command: "yum-config-manager --add-repo {{ docker_repo }}"
+  args:
+    creates: "/etc/yum.repos.d/{{ docker_package }}.repo"
+
+
+# - name: Add the YUM Docker repository in CentOS
+#   yum_repository:
+#     name: "{{ docker_package }}"
+#     description: Docker Repository.
+#     baseurl: "{{ docker_repo }}"
+#     enabled: yes
+

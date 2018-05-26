@@ -1,0 +1,63 @@
+---
+
+# Variables setup
+
+- debug:
+    msg: "docker package? {{ docker_package }}, linux distro: {{ansible_distribution}}, docker ver: {{docker_version}}"
+
+# something wrong with include_vars, if i use expresseion above directly here so. use variable using set_fact
+- include: "install-{{ansible_distribution}}.yml"
+
+
+- name: Create docker.service dropin directroy
+  file: 
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+# check kernal version here to check if overlay2 can be used
+
+
+- name: Configure systemd to run the Docker Daemon with Http proxy 
+  template:
+    src: http.conf.in
+    dest: /etc/systemd/system/docker.service.d/http.conf
+  when: proxy_env.http_proxy is defined
+
+# makecache is added whenever update_cache: yes
+- name: Install docker 
+  package: name={{docker_package}}-{{ docker_version }} state=present #update_cache=yes
+
+
+- name: Add nogroup, docker to group 
+  group: name=docker state=present
+
+# when docker service gets started, /etc/docker is created automatically but we created the dir manually not to call systemd task twice here.
+- name: Create /etc/docker directory 
+  file: path=/etc/docker state=directory
+
+
+- name: Generate docker daemon.json
+  template:
+    src: daemon.json.in
+    dest: /etc/docker/daemon.json
+  
+
+- name: Check if docker-proxy, docker-runc exist
+  stat: path=/usr/libexec/docker
+  register: stat_result
+
+
+- name: Create symbolic link to docker-proxy, docker-runc
+  file:
+    src: "/usr/libexec/docker/{{ item }}-current"
+    dest: "/usr/libexec/docker/{{ item }}"
+    state: link
+  with_items:
+    - docker-proxy
+    - docker-runc
+  when: stat_result.stat.exists 
+
+# from ansible version 2.2
+- name: Reload systemd and restat docker service
+  systemd: name=docker state=restarted enabled=yes daemon_reload=yes
+  changed_when: false

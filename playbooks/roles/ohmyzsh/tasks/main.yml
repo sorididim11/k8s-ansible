@@ -1,0 +1,38 @@
+---
+  - name: debug home dir 
+    debug: 
+      msg: "{{ ansible_user_dir }}"
+  
+
+  - name: Install zsh 
+    become: yes
+    package: name={{item}} state=present
+    become_user: root
+    with_items:
+      - zsh
+      - git
+
+  - name: Cloning oh-my-zsh
+    git: 
+      repo: https://github.com/robbyrussell/oh-my-zsh
+      dest: "{{ansible_user_dir}}/.oh-my-zsh"
+    register: isCloned
+
+
+  - name: Cloning autosuggestion plugins of oh-my-zsh
+    git: 
+      repo: https://github.com/zsh-users/zsh-autosuggestions
+      dest: "{{ansible_user_dir}}/.oh-my-zsh/plugins/zsh-autosuggestions"
+
+
+  - name: Createing new zshrc 
+    template:
+      src: templates/zshrc.in
+      dest: "{{ansible_user_dir}}/.zshrc"  
+  
+
+  - name: Chanage to zsh 
+    become: yes
+    user:  "name={{ansible_user_id}} shell=/usr/bin/zsh"    
+
+ 

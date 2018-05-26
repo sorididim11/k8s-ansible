@@ -1,0 +1,46 @@
+
+# - name: Get the certificates used by UCP 
+#   get_url: 
+#     url:  https://"{{ docker_ucp_host_address }}"/ca 
+#     dest: /tmp/ucp-ca.pem
+#   delegate_to: "{{ item }}"
+
+
+- name: Check if DTR is running
+  shell: docker ps -a --filter status=running --filter name=dtr-registry  --format "{{ '{{' }}.ID{{ '}}' }}"
+  register: dtr_id
+
+
+
+- name: Install DTR 
+  shell: docker run --rm --name dtr-registry
+          docker/dtr:{{ docker_dtr_version }} install
+          --ucp-url {{ docker_ucp_controller_url  }}   
+          --dtr-external-url {{ docker_dtr_external_url }}
+          --ucp-username {{ docker_ucp_admin_username }}
+          --ucp-password {{ docker_ucp_admin_password }} 
+          --ucp-insecure-tls
+  when: dtr_id.stdout == ""
+
+  #--ucp-ca ${cat /tmp/ucp-ca.pem}
+
+
+# - name: Export the docker_ucp_controller_url fact if not defined.
+#   set_fact:
+#     docker_dtr_url: "https://{{ docker_ucp_host_address }}:{{ docker_ucp_controller_port }}"
+#   run_once: true
+
+
+#docker run -it --rm docker/dtr:2.1.3 remove --ucp-insecure-tls --ucp-url 16.202.67.149 --ucp-username admin --ucp-password hpinvent #how to find replica?
+
+# - name: Add DTR replica to the cluster
+#   shell: docker run -it --rm 
+#          docker/dtr:{{ docker_dtr_version }} join 
+#          --ucp-url {{ groups['docker_ucp_controller'][0]  }} 
+#          --ucp-node {{ hostvars[groups['docker_ucp_controller'][0]].ansible_hostname }}
+#          --ucp-username {{ docker_ucp_admin_username }}
+#          --ucp-password {{ docker_ucp_admin_password }}
+#          --replica-id 
+#          --ucp-insecure-tls
+#   delegate_to: "{{item}}"
+#   when: item != groups['docker_dtr'][0] and dtr['stdout'] == ""

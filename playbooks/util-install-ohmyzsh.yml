@@ -1,0 +1,5 @@
+
+--- 
+- hosts: docker_bootstrap 
+  roles:
+    - role: ohmyzsh

@@ -1,0 +1,30 @@
+---
+
+# AUTHTOKEN=$(curl -sk -d '{"username":"<username>","password":"<password>"}' https://<ucp-ip>/auth/login | jq -r .auth_token)
+- name: Aquire authentication token from UCP
+  uri:
+      url: "{{ docker_ucp_controller_url }}/auth/login"
+      method: POST
+      validate_certs: no
+      return_content: yes
+      body_format: json
+      body: 
+        username: "{{ docker_ucp_admin_username }}"
+        password: "{{ docker_ucp_admin_password }}"
+  register: result
+
+
+- set_fact:
+    token: "{{result | to_json }}.auth_token" 
+# curl -k -H "Authorization: Bearer $AUTHTOKEN" https://<ucp-ip>/api/clientbundle -o bundle.zip
+
+- name: Download the client certificate bundle
+  get_url:
+      url: "{{ docker_ucp_controller_url }}/api/clientbundle"
+      dest: /tmp/bundle.zip
+      headers: "Authorization: Bearer {{token}}"
+      validate_certs: no
+
+
+- name: Updates the DOCKER_HOST environment variable to make local Docker CLI communicate with UCP 
+  shell: "unzip /tmp/bundle.zip && eval $(<env.sh)"

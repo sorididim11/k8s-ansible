@@ -1,0 +1,29 @@
+
+---
+
+- name: "Install UCP"
+  hosts: docker_managers[0]
+  become: yes
+  tags: ['ucp'] 
+  roles:
+    - { role: ddc/offline-install, when: is_ucp_offline_install is defined and is_ucp_offline_install == True }
+    - { role: ddc/ucp, ucp_command: install } 
+  environment: "{{ proxy_env }}"
+
+
+- name: "Deploy manager nodes"
+  hosts: docker_managers:!docker_managers[0]
+  become: yes
+  serial: 1
+  roles:
+    - { role: node, swarm_command: join, swarm_role: manager } 
+  environment: "{{ proxy_env }}"
+
+
+- name: "Deploy slave nodes"
+  hosts: docker_workers
+  become: yes
+  serial: 1
+  roles:
+    - { role: node, swarm_command: join, swarm_role: worker } 
+  environment: "{{ proxy_env }}"

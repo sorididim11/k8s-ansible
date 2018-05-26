@@ -1,0 +1,9 @@
+
+---
+
+- name: "Install docker"
+  hosts: docker_nodes:docker_bootstrap
+  become: yes
+  roles:
+    - role: docker
+  environment: "{{ proxy_env }}"

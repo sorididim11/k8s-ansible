@@ -1,0 +1,4 @@
+---
+
+docker_cs_apt_repo: "https://packages.docker.com/{{ docker_csengine_version }}/apt/repo"
+docker_py_package: python-docker 

@@ -1,0 +1,8 @@
+---
+
+- name: Restroe UCP using backup, /tmp/backup.tar
+  shell: docker run --log-driver none --rm --name ucp
+        -v /var/run/docker.sock:/var/run/docker.sock
+        docker/ucp:{{ docker_ucp_version }} restore 
+         {% if docker_ucp_backup_passfrase is defined and docker_ucp_backup_passfrase != "" %}--passphrase {{ docker_ucp_backup_passfrase }}{% endif %}
+        < /tmp/backup.tar

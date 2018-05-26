@@ -1,0 +1,16 @@
+
+.vagrant/
+
+*.log
+
+.vscode
+
+*.md
+
+*.retry
+
+*.gz
+
+.DS_Store
+
+insecure_private_key

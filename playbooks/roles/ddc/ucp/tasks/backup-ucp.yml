@@ -1,0 +1,25 @@
+---
+
+- name: Read /etc/docker/daemon.json file to check out SELinux enabled
+  set_fact: 
+    dockerd_conf: "{{lookup('file','/etc/docker/daemon.json') | from_json  }}.selinux-enabled"
+
+
+- name: Store backup UCP data to /tmp/backup.tar
+  shell: docker run --log-driver none --rm --name ucp
+        -v /var/run/docker.sock:/var/run/docker.sock
+        docker/ucp:{{ docker_ucp_version }} backup 
+        --id {{ ucp_instance_id['stdout'] }}
+        {% if ansible_distribution == "RedHat" and  dockerd_conf.selinux-enabled  is defined and dockerd_conf.selinux-enabled == True %} --security-opt label=disable {% endif %} 
+        {% if docker_ucp_backup_passfrase is defined and docker_ucp_backup_passfrase != "" %}--passfrase {{ docker_ucp_backup_passfrase }}{% endif %}
+        > {{ docker_ucp_backup_file }}
+        creates={{ docker_ucp_backup_file }}
+
+
+- name: Fetch the UCP root CA from the controller.
+  become: no
+  fetch:
+    src: "{{ docker_ucp_backup_file }}"
+    dest: "{{ local_docker_ucp_backup_file }}"
+    flat: yes
+  

@@ -1,0 +1,16 @@
+---
+
+- assert:
+    that: ansible_distribution == "RedHat" 
+    msg: Redhat docker package only support in RHEL 
+
+- set_fact:
+    docker_pkg_name: docker
+
+
+- name: Add extras of redhat repository in redhat
+  command: "subscription-manager repos --enable=rhel-7-{{ item }}"
+  with_items:
+    - server-rpms
+    - server-extras-rpms
+    - server-optional-rpms

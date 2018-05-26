@@ -1,0 +1,22 @@
+
+---
+- name: Reload systemd
+  command: systemctl --system daemon-reload
+
+
+- name: Restart docker 
+  command: /bin/true
+  notify: 
+    - Stop docker 
+    - Start docker 
+
+
+- name: Stop docker 
+  service: name=docker state=stopped
+    
+
+- name: Start docker 
+  service: name=docker state=started
+
+...
+

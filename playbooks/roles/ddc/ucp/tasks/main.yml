@@ -1,0 +1,3 @@
+---
+
+- include: "{{ucp_command}}-ucp.yml"

@@ -1,0 +1,11 @@
+
+---
+
+- name: Create swarm tokens for workers 
+  shell: "docker swarm join-token {{ swarm_role }} -q --rotate"
+  register: token
+  delegate_to: "{{ groups['docker_managers'][0] }}"
+
+
+- name: Add Nodes to the UCP cluster.
+  shell: docker swarm join  --token {{ token.stdout }}  {{ docker_ucp_host_address }}

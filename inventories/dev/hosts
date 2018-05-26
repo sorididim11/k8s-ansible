@@ -1,0 +1,12 @@
+[k8s_masters]
+10.0.15.21
+
+[k8s_workers]
+10.0.15.31
+
+[k8s_bootstrap]
+10.0.15.11
+
+[docker_nodes:children]
+k8s_masters
+k8s_workers
