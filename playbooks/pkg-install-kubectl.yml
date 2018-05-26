@@ -19,8 +19,6 @@
       synchronize:
         src: /etc/kubernetes/admin.conf
         dest: "{{user_home}}/.kube/config"
-        owner: "{{user_name}}"
-        group: "{{user_name}}"
       delegate_to: "{{ groups['k8s_masters'][0]}}"
 
   environment: "{{ proxy_env }}"
