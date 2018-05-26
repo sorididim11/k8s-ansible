@@ -20,8 +20,11 @@
       state: directory
     
   - copy: 
+      become: yes
       src: /etc/kubernetes/admin.conf
       dest: ~/.kube/config
+      owner: "{{ansible_user_id}}"
+      group: "{{ansible_user_id}}"
       remote_src: yes
 
 - name: Install Pod network
