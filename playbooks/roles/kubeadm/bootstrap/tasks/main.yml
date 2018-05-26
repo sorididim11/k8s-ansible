@@ -2,7 +2,7 @@
 
 - name: Init kubernetes
   become: yes
-  command: kube init --pod-network-cidr=10.244.0.0/16
+  command: kubeadm init --pod-network-cidr=10.244.0.0/16
 
 # to make kubectl work for your non-root user
 # mkdir -p $HOME/.kube
