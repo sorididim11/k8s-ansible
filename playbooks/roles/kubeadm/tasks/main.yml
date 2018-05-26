@@ -10,7 +10,7 @@
 - name: Install kubernetes repository
   become: yes
   copy: 
-    src: kubernetes.repo 
+    src: kubernetes.repo
     dest: /etc/yum.repos.d/kubernetes.repo
 
 
