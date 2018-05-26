@@ -5,6 +5,7 @@
     pod_network: "{{pod_network[pod_network_plugin]}}"
 
 - name: Reset kubeadm
+  become: yes
   command: kubeadm reset
 
 # It by design does not install a networking solution for you, which means you have to install a third-party CNI-compliant networking solution yourself using kubectl apply
