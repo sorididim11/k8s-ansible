@@ -40,7 +40,7 @@
 - name: Configure cgroup drvier on masters
   block:
     - name:
-      lineinfile: regexp="^cgroup-driver=" line="cgroup-driver=cgroupfs" dest=/etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
+      lineinfile: regexp="cgroup-driver=" line="cgroup-driver=cgroupfs" dest=/etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
 
     - name: Reload kubelet
       systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
