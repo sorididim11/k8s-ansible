@@ -4,6 +4,8 @@
 - set_fact:
     pod_network: "{{pod_network[pod_network_plugin]}}"
 
+- debug: msg="{{pod_network.name}}, {{pod_network.cidr}}"
+
 - name: Reset kubeadm
   become: yes
   command: kubeadm reset
