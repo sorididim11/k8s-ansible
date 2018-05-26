@@ -1,5 +1,10 @@
 ---
 
+- name: swap off 
+  become: yes
+  command:  swapoff -a
+
+
 - name: Init kubernetes
   become: yes
   command: kubeadm init --pod-network-cidr=10.244.0.0/16
