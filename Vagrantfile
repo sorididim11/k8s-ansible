@@ -20,7 +20,7 @@ end
 UI.info 'Create ansible dynamic inventory file...', bold: true
 inventory_file = 'inventories/dev/hosts'
 File.open(inventory_file, 'w') do |f|
-  %w(k8s_masters k8s_workers k8s_bootstrap).each do |section|
+  %w(k8s_masters k8s_workers k8s_bootstrap k8s_cli).each do |section|
     f.puts("[#{section}]")
     settings.each do |_, machine_info|
       f.puts(machine_info['ip']) if machine_info['type'] == section
