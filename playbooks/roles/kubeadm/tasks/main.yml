@@ -9,7 +9,9 @@
 
 - name: Install kubernetes repository
   become: yes
-  file: src=kubernetes.repo dest=/etc/yum.repos.d
+  file: 
+    src: kubernetes.repo 
+    dest: /etc/yum.repos.d/kubernetes.repo
 
 
 - nmae: Install kubelet kubeadm kubectl
