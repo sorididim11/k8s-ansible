@@ -42,8 +42,8 @@
     - name:
       lineinfile: 
         dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
-        regexp: 'cgroup-driver='
-        line: 'cgroup-driver=cgroupfs'
+        regexp: '--cgroup-driver='
+        line: '--cgroup-driver=cgroupfs'
 
     - name: Reload kubelet
       systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
