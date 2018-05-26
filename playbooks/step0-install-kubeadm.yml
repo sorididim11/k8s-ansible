@@ -1,0 +1,10 @@
+
+---
+
+- name: "Install kubeadm"
+  hosts: k8s_nodes
+  become: yes
+  roles:
+    - { role: cluster }
+  environment: "{{ proxy_env }}"
+

@@ -1,0 +1,44 @@
+---
+
+  # allow containers to access the host filesystem, which is required by pod networks for example.
+  # You have to do this until SELinux support is improved in the kubelet.
+- name: Set selinux to "{{selinux_mode}}" mode.
+  become: yes
+  selinux: state=disabled
+
+
+- name: Install kubernetes repository
+  file: src=kubernetes.repo dest=/etc/yum.repos.d
+
+
+- nmae: Install kubelet kubeadm kubectl
+  become: yes
+  yum: name={{item}} state=present
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+
+- name: Start and Enable rpcbind service 
+  become: yes
+  systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
+  changed_when: no
+
+
+#  RHEL/CentOS 7 have reported issues with traffic being routed incorrectly due to iptables being bypassed
+- name: set sysctl 
+  sysctl: name={{item.}} value=1 state=present
+  with_items:
+    - net.bridge.bridge-nf-call-ip6tables
+    - et.bridge.bridge-nf-call-iptables
+
+
+- name: Configure cgroup drvier on masters
+  block:
+    - name:
+      lineinfile: regexp="^cgroup-driver=" line="cgroup-driver=cgroupfs" dest=/etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
+
+    - name: Reload kubelet
+      systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
+  when: inventory_hostname in groups['k8s_masters']
