@@ -14,13 +14,10 @@
   hosts: k8s_cli
   tasks:
 
-    - name: Add kubernetes repository
-      become: yes
-      copy: src=kubernetes.repo dest=/etc/yum.repos.d
-
     - name: Install kubectl 
-      package: name=kubectl-{{kube_version}} state=present
-
+      get_url:
+        url: "https://storage.googleapis.com/kubernetes-release/release/{{kube_version}}//bin/linux/amd64/kubectl"
+        dest: /usr/bin
 
     - name: Create kubectl directory for non-root user 
       file: 
