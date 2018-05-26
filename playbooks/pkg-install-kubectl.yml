@@ -26,7 +26,7 @@
         path: ~/.kube
         state: directory
 
-    - name: Fetch kubeconfig file from master
+    - name: copy admin.conf to .kube directory
       copy:
         src: /tmp/admin.conf
         dest: "{{ansible_user_dir}}/.kube/config"
