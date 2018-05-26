@@ -16,17 +16,12 @@
     
     - name: Fetch kubeconfig file from master
       become: yes
-      fetch:
+      synchronize:
         src: /etc/kubernetes/admin.conf
-        dest: /tmp/admin.conf
+        dest: "{{user_home}}/.kube/config"
         owner: "{{user_name}}"
         group: "{{user_name}}"
+      delegate_to: "{{ groups['k8s_masters'][0]}}"
 
-    - name: copy admin.conf
-      become: yes
-      copy: 
-        src: /tmp/admin.conf
-        dest: "{{user_home}}/.kube/config"  
-      
   environment: "{{ proxy_env }}"
 
