@@ -2,7 +2,7 @@
 ---
 
 - name: "Install docker"
-  hosts: docker_nodes:docker_bootstrap
+  hosts: k8s_nodes:k8s_bootstrap
   become: yes
   roles:
     - role: docker
