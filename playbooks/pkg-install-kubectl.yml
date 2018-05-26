@@ -3,7 +3,6 @@
 
 - name: "Install kubeadm"
   hosts: k8s_cli
-  become: yes
   tasks:
     - name: Create kubectl directory for non-root user 
       file: 
@@ -15,7 +14,6 @@
         user_home: "{{ ansible_user_dir }}"
     
     - name: Fetch kubeconfig file from master
-      become: yes
       synchronize:
         src: /etc/kubernetes/admin.conf
         dest: "{{user_home}}/.kube/config"
