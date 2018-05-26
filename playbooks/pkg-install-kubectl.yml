@@ -1,7 +1,7 @@
 
 ---
 
-- hosts: k8s_cli
+- hosts: k8s_masters[0]
   tasks:
     - name: Fetch kubeconfig file from master
       become: yes
@@ -13,6 +13,15 @@
 - name: "Install kubeadm"
   hosts: k8s_cli
   tasks:
+
+    - name: Add kubernetes repository
+      become: yes
+      copy: src=kubernetes.repo dest=/etc/yum.repos.d
+
+    - name: Install kubectl 
+      package: name=kubectl-{{kube_version}} state=present
+
+
     - name: Create kubectl directory for non-root user 
       file: 
         path: ~/.kube
