@@ -27,7 +27,7 @@
     become: yes
     copy: 
       src: /etc/kubernetes/admin.conf
-      dest: "{{user_home}}/config"
+      dest: "{{user_home}}/.kube/config"
       owner: "{{user_name}}"
       group: "{{user_name}}"
       remote_src: yes
