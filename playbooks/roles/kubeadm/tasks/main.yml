@@ -11,7 +11,7 @@
   become: yes
   copy: 
     src: kubernetes.repo 
-    dest: /etc/yum.repos.d/kubernetes.repo
+    dest: /etc/yum.repos.d
 
 
 - name: Install kubelet kubeadm kubectl
