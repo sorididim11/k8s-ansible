@@ -2,53 +2,65 @@
 
   # allow containers to access the host filesystem, which is required by pod networks for example.
   # You have to do this until SELinux support is improved in the kubelet.
-- name: Set selinux to "{{selinux_mode}}" mode.
-  become: yes
-  selinux: state=disabled
+- name: Set selinux to disabled mode.
+  selinux: policy=targeted state=permissive
 
 
-- name: Install kubernetes repository
-  become: yes
+# You MUST disable swap in order for the kubelet to work properly
+# setenforce 0
+- name: Disable swap for kubelet to work properly 
+  command:  swapoff -a
+
+
+# cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+# [kubernetes]
+# name=Kubernetes
+# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+# enabled=1
+# gpgcheck=1
+# repo_gpgcheck=1
+# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+# EOF
+- name: Add kubernetes repository
   copy: 
     src: kubernetes.repo
     dest: /etc/yum.repos.d/kubernetes.repo
 
 
+# yum install -y kubelet kubeadm kubectl
 - name: Install kubelet kubeadm kubectl
-  become: yes
-  yum: name={{item}} state=present
+  yum: name={{item}}-{{kube_version}} state=present
   with_items:
     - kubelet
     - kubeadm
     - kubectl
 
-
-- name: Start and Enable rpcbind service 
-  become: yes
-  systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
-  changed_when: no
+# systemctl enable kubelet && systemctl start kubelet
+- name: Start/Enable kubelet
+  systemd: name=kubelet state=restarted enabled=yes
 
 
 #  RHEL/CentOS 7 have reported issues with traffic being routed incorrectly due to iptables being bypassed
-- name: set sysctl 
+- name: Enable iptables 
   sysctl: name={{item}} value=1 state=present
   with_items:
     - net.bridge.bridge-nf-call-ip6tables
     - net.bridge.bridge-nf-call-iptables
 
 
-- name: swap off 
-  become: yes
-  command:  swapoff -a
-
+# Make sure that the cgroup driver used by kubelet is the same as the one used by Docker. avi_customipamdnsprofile
+# docker info | grep -i cgroup
+# cat /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+# change if not the same
+# sed -i "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 - name: Configure cgroup drvier on masters
   block:
-    - name:
+    - name: Update kubeadm config file
       lineinfile: 
         dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
         regexp: 'Environment="KUBELET_CGROUP_ARGS=--cgroup-driver='
         line: '-Environment="KUBELET_CGROUP_ARGS=--cgroup-driver=groupfs'
 
-    - name: Reload kubelet
-      systemd: name=kubelet state=restarted enabled=yes daemon_reload=yes
+    - name: Restart kubelet
+      systemd: name=kubelet state=restarted daemon_reload=yes
 

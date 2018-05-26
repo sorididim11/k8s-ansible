@@ -1,0 +1,12 @@
+
+pod_network:
+  calico: 
+    cidr: 192.168.0.0/16
+    plugins:
+      - https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+      - https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+
+  flannel:
+    cidr: 10.244.0.0/16
+    plugins:
+      - https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml

@@ -1,0 +1,10 @@
+
+---
+
+- name: "Install kubeadm"
+  hosts: k8s_nodes
+  become: yes
+  tasks:
+    - kubeadm/install
+  environment: "{{ proxy_env }}"
+
