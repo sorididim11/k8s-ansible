@@ -4,7 +4,7 @@
 - set_fact:
     pod_network: "{{pod_network[pod_network_plugin]}}"
 
-- debug: msg="{{pod_network.name}}, {{pod_network.cidr}}"
+- debug: msg="pod network {{pod_network.name}}, {{pod_network.cidr}}"
 
 - name: Reset kubeadm
   become: yes
@@ -23,7 +23,7 @@
 # sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 # sudo chown $(id -u):$(id -g) $HOME/.kube/config
 - block:
-  - name: create dir 
+  - name: Create kubectl directory for non-root user 
     file: 
       path: ~/.kube
       state: directory
@@ -43,8 +43,8 @@
 
 
 # kube-dns, an internal helper service will not start up before a network is installed. kubeadm only supports Container Network Interface (CNI) based networks 
-- name: Install Pod network addon
-  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+- name: Install Pod network plugin
+  command: kubectl apply -f {{item}}
   with_items: "{{pod_network.plugins}}"
 
 
