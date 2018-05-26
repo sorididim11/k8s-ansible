@@ -1,8 +1,5 @@
 ---
 
-- name: swap off 
-  become: yes
-  command:  swapoff -a
 
 
 - name: Init kubernetes
