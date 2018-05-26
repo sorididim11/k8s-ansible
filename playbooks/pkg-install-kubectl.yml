@@ -14,7 +14,6 @@
 - name: "Install kubeadm"
   hosts: k8s_cli
   tasks:
-
     - name: Install kubectl 
       become: yes
       get_url:
