@@ -1,5 +1,12 @@
 - name: "Install masters"
   hosts: k8s_masters
   roles:
-    - role: kubeadm/bootstrap
+    - role: kubeadm/bootstrap/master
+  environment: "{{ proxy_env }}"
+
+
+- name: "Install nodes"
+  hosts: k8s_workers
+  roles:
+    - role: kubeadm/bootstrap/worker
   environment: "{{ proxy_env }}"
