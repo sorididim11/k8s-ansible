@@ -4,6 +4,7 @@
   shell: "kubeadm reset"
   register: reset_cluster
 
+# kubeadm join --token <token> <master-ip>:<master-port> --discovery-token-ca-cert-hash sha256:<hash>
 - name: Join to Kubernetes cluster
   when: reset_cluster|succeeded
   shell: |
