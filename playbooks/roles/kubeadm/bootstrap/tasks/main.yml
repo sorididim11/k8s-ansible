@@ -18,14 +18,18 @@
     file: 
       path: ~/.kube
       state: directory
+
+  - set_fact:
+      user_name: "{{ ansible_user_id }}"
+      user_home: "{{ ansible_user_dir }}"
     
   - name: copy admin.conf
     become: yes
     copy: 
       src: /etc/kubernetes/admin.conf
-      dest: ~/.kube/config
-      owner: "{{ansible_user_id}}"
-      group: "{{ansible_user_id}}"
+      dest: "{{user_home}}/config"
+      owner: "{{user_name}}"
+      group: "{{user_name}}"
       remote_src: yes
 
 - name: Install Pod network
