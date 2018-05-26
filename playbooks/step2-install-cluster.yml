@@ -5,8 +5,4 @@
   environment: "{{ proxy_env }}"
 
 
-- name: "Install nodes"
-  hosts: k8s_workers
-  roles:
-    - role: kubeadm/bootstrap/worker
-  environment: "{{ proxy_env }}"
+- include: op-add-worker.yml
