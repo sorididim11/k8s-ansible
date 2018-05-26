@@ -11,7 +11,7 @@ settings = YAML.load_file 'vagrantConf.yml'
 
 # Check if vagrant confile is in valid order. dcos_bootstrap should be at the bottom of config file
 UI.info 'Checking if the location of dcos_boostrap of vagrantConf.xml is valid...', bold: true
-if settings[settings.keys.last]['type'] != 'docker_bootstrap'
+if settings[settings.keys.last]['type'] != 'k8s_bootstrap'
   UI.error 'Please put dcos_bootstrap at the bottom of vagrantConf.yml because of provisioning order ', bold: true
   exit(-1)
 end
@@ -20,14 +20,14 @@ end
 UI.info 'Create ansible dynamic inventory file...', bold: true
 inventory_file = 'inventories/dev/hosts'
 File.open(inventory_file, 'w') do |f|
-  %w(docker_managers docker_workers docker_bootstrap).each do |section|
+  %w(k8s_masters k8s_workers k8s_bootstrap).each do |section|
     f.puts("[#{section}]")
     settings.each do |_, machine_info|
       f.puts(machine_info['ip']) if machine_info['type'] == section
     end
     f.puts('')
   end
-  f.write("[docker_nodes:children]\ndocker_managers\ndocker_workers")
+  f.write("[k8s_nodes:children]\nk8s_masters\nk8s_workers")
 end
 
 Vagrant.configure('2') do |config|
