@@ -1,0 +1,25 @@
+---
+
+- name: Init kubernetes
+  become: yes
+  command: kube init --pod-network-cidr=10.244.0.0/16
+
+# to make kubectl work for your non-root user
+# mkdir -p $HOME/.kube
+# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# sudo chown $(id -u):$(id -g) $HOME/.kube/config
+- block:
+  - name: create dir 
+    file: 
+      path: ~/.kube
+      state: directory
+    
+  - copy: 
+      src: /etc/kubernetes/admin.conf
+      dest: ~/.kube/config
+      remote_src: yes
+
+- name: Install Pod network
+  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+
+

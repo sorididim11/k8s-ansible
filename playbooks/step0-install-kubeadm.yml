@@ -5,6 +5,6 @@
   hosts: k8s_nodes
   become: yes
   roles:
-    - kubeadm
+    - kubeadm/install
   environment: "{{ proxy_env }}"
 

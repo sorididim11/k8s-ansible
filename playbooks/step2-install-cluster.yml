@@ -1,0 +1,6 @@
+- name: "Install masters"
+  hosts: k8s_masters
+  become: yes
+  roles:
+    - role: kubeadm/bootstrap
+  environment: "{{ proxy_env }}"
