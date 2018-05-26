@@ -1,6 +1,15 @@
 
 ---
 
+- hosts: k8s_cli
+  tasks:
+    - name: Fetch kubeconfig file from master
+      become: yes
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: "/tmp/admin.conf"
+      
+
 - name: "Install kubeadm"
   hosts: k8s_cli
   tasks:
@@ -15,10 +24,8 @@
     
     - name: Fetch kubeconfig file from master
       copy:
-        src: /etc/kubernetes/admin.conf
+        src: /tmp/admin.conf
         dest: "{{user_home}}/.kube/config"
-        remote_src: yes
-      delegate_to: "{{ groups['k8s_masters'][0]}}"
 
   environment: "{{ proxy_env }}"
 
