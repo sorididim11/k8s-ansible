@@ -5,6 +5,28 @@
   hosts: k8s_nodes
   become: yes
   tasks:
-    - kubeadm/install
+    - name: Create kubectl directory for non-root user 
+      file: 
+        path: ~/.kube
+        state: directory
+
+    - set_fact:
+        user_name: "{{ ansible_user_id }}"
+        user_home: "{{ ansible_user_dir }}"
+    
+    - name: Fetch kubeconfig file from master
+      become: yes
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: /tmp/admin.conf
+        owner: "{{user_name}}"
+        group: "{{user_name}}"
+
+    - name: copy admin.conf
+      become: yes
+      copy: 
+        src: /tmp/admin.conf
+        dest: "{{user_home}}/.kube/config"  
+      
   environment: "{{ proxy_env }}"
 
