@@ -25,15 +25,15 @@
 # Alternatively, if you are the root user, you could run this:
 # export KUBECONFIG=/etc/kubernetes/admin.conf
 - block:
-  - name: Create kubectl directory for non-root user 
-    file: 
-      path: ~/.kube
-      state: directory
-
   - set_fact:
       user_name: "{{ ansible_user_id }}"
       user_home: "{{ ansible_user_dir }}"
-    
+
+  - name: Create kubectl directory for non-root user 
+    file: 
+      path: "{{user_home}}/.kube"
+      state: directory
+
   - name: copy admin.conf
     become: yes
     copy: 
