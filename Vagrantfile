@@ -72,8 +72,7 @@ Vagrant.configure('2') do |config|
       end
 
       if machine_info['name'] == 'bootstrap'
-
-        node.vm.network 'forwarded_port', guest: 22, host: 2222
+        node.vm.network 'forwarded_port', guest: 22, host: 2333
         ssh_prv_key = File.read("#{Dir.home}/.vagrant.d/insecure_private_key")
         UI.info 'Insert vagrant insecure key to bootstreap node...', bold: true
         node.vm.provision 'shell' do |sh|
