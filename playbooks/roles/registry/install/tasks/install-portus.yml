@@ -1,0 +1,82 @@
+---
+- set_fact: 
+    auth_root: "{{ dcos_bootstrap_root_path }}/genconf/serve/auth"
+
+
+- name: Install docker-compose
+  become: yes
+  pip: name=docker-compose state=present
+
+
+- name: Check if dcoc/dist dir exists
+  become: yes
+  file:
+    path: "{{auth_root}}/{{item}}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  with_items: 
+    - secrets
+    - nginx
+    - registry
+    - portus
+
+
+- copy:
+    src: "{{item.from}}"
+    dest: "{{auth_root}}/{{item.to}}"
+  with_items:
+    - { from: init, to: registry/init }
+    - { from: registry-conf.yml, to: registry/config.yml  }
+ 
+
+- template:
+    src: "{{item.from}}"
+    dest: "{{auth_root}}/{{item.to}}"
+  with_items: 
+    - { from: docker-compose.yml.j2, to: docker-compose.yml  }
+    - { from: env.j2, to: .env }
+    - { from: nginx.conf.j2, to: nginx/nginx.conf }
+    - { from: config-local.yml.j2, to: portus/config-local.yml }
+    - { from: openssl.cnf.j2, to: secrets/openssl.conf }
+   
+
+
+- name: Generate self-signed certificate for both auth and registry with common name, boostrap node IP address
+  command: >
+          openssl req -x509  -newkey rsa:4096 -nodes -sha256 -days 365
+            -keyout portus.key   -out portus.crt
+            -config {{auth_root}}/secrets/openssl.conf
+  args:
+    chdir: "{{auth_root}}/secrets"
+    creates: "portus.crt"
+
+
+- name: Run web container to distribute keys
+  become: yes
+  docker_container: 
+    name: boot-nginx
+    image: nginx
+    restart_policy: unless-stopped
+    state: started
+    ports: "{{dcos_bootstrap_port}}:80"
+    volumes: "{{ dcos_bootstrap_root_path }}/genconf/serve:/usr/share/nginx/html:ro"
+
+
+- name: Run docker compose 
+  become: yes
+  command: docker-compose up -d
+  args:
+    chdir: "{{auth_root}}"
+
+
+- pause:
+    prompt: "Create account if you don't use LDAP and regiser private registry to portus. continue?"
+
+      
+#ansible 2.3.1 & compose 1.16.0 is not working  msg: unable to load docker-compose. Error: cannot import name splitdrive
+# - name: Run portus, private registry
+#   become: yes
+#   docker_service:
+#     project_src: "{{auth_root}}"
+#     state: present

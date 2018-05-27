@@ -1,0 +1,5 @@
+--- 
+- name: Update ansible fact caching 
+  hosts: all 
+  gather_facts: True
+  tasks: []

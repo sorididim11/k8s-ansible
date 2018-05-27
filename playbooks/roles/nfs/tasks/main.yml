@@ -1,0 +1,29 @@
+---
+
+- name: Install NFS package 
+  become: yes
+  yum: name=nfs-utils state=present
+
+
+- name: Add group, {{nfs_group_name}} for NFS 
+  become: yes
+  group: name="{{nfs_group_name}}" gid="{{nfs_group_id}}" state=present
+
+# domain names are very impotant for NFSv4 to work - all clients and server must be in the same base doamin
+- block:
+    - name: Update /etc/hosts for NFS 
+      blockinfile:
+        path: /etc/hosts
+        block: |
+            {{ hostvars[item].ansible_host }} {{ hostvars[item].ansible_hostname }}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+      with_inventory_hostnames: 
+        - dcos_slaves:dcos_slaves_public:dcos_bootstrap
+
+    - name: Mapping user names and group IDs to NFSv4 IDs 
+      lineinfile: 'dest=/etc/idmapd.conf regexp="^DOMAIN =" line="DOMAIN = {{nfs_base_domain}}" state=present create=yes'        
+  when: nfs_version == 'nfs4'
+  become: yes
+
+  
+- include: "{{node_type}}.yml"

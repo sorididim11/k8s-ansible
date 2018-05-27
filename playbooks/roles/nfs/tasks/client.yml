@@ -1,0 +1,33 @@
+---
+
+ # check if mouting is successful by showmount -e {{nfs_base_domain}}
+- name: Start and Enable rpcbind service 
+  become: yes
+  systemd: name=rpcbind state=restarted enabled=yes daemon_reload=yes
+  changed_when: no
+
+
+- name: Make sure if NFS mounting point exists
+  become: yes
+  file: "path={{item.mnt}} state=directory  group={{ nfs_group_name }}"
+  with_items: "{{nfs_exports}}"
+ 
+   
+#  mount -t {{nfs_version}} {{nfs_server_fqdn}}:{{item.dir}} {{item.mnt}}
+# and update /etc/fstab
+- name:  Mount NFS server and Register it to /etc/fstab
+  become: yes
+  mount:
+    fstype: "{{nfs_version}}"
+    src: "{{nfs_server_fqdn}}:{{item.dir}}"
+    path: "{{item.mnt}}"
+    state: mounted
+    # dump: 0
+    # passno: 2
+    # opts: defaults,nobootwait
+  with_items: "{{nfs_exports}}"
+
+
+- name: Remount all 
+  become: yes
+  command: "mount -a"

@@ -1,0 +1,39 @@
+---
+
+
+# one of DC/OS prerequsites is to turn off firewalld
+# - name: Open NFS related ports 
+#   firewalld:
+#     service: "{{item}}"
+#     permanent: true
+#     state: enabled
+#   with_items: 
+#     - nfs
+#     - mountd
+#     - rpc-bind
+
+
+- name: Start and Enable NFS related services 
+  become: yes
+  systemd: "name={{item}} state=restarted enabled=yes daemon_reload=yes"
+  with_items:
+    - rpcbind
+    - nfs-server 
+  changed_when: no
+
+
+- name: Ensure if shared directory exists
+  become: yes
+  file: "path={{item.dir}} state=directory  group={{ nfs_group_name }}"
+  with_items: "{{nfs_exports}}"
+
+
+- name: Update /etc/exports 
+  become: yes
+  lineinfile: dest=/etc/exports regexp="^{{item.dir}}" line="{{item.dir}} {{item.target}}({{item.options}}) " state=present create=yes
+  with_items: "{{nfs_exports}}"
+
+
+- name: Re-export all entries from /etc/exports
+  become: yes
+  command: exportfs -ra

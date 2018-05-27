@@ -1,0 +1,9 @@
+--- 
+- name: "Install portus docker registry"
+  gather_facts: True
+  hosts: dcos_cli[0]
+  vars_files: 
+    - pkg-desc/registry-portus.yml
+  roles:
+    - { role: dcos/packages/registry/sync-image, registry_package: portus,  } #portus or cesanta
+  environment: "{{ proxy_env }}"

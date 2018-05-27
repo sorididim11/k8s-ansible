@@ -1,0 +1,28 @@
+---
+
+
+# Ansible Requires Version 2.4+ , Docker, docker-py Python module, GNU Make, Git Requires Version 1.8.4+
+- name: Update git 
+  become: yes
+  yum: name=git-2.1.0 state=present
+  
+
+- name: Install required python modules of AWX
+  become: yes
+  pip: name=docker state=present
+  with_items:
+    - docker
+    - docker-compose
+
+
+# default user/password admin/password
+- name: Clone the repo, Ansible AWX
+  git:
+    repo: https://github.com/ansible/awx.git
+    dest: ~
+
+
+- name: Start the build of AWX
+  shell: ansible-playbook -i inventory install.yml
+  args:
+    chdir: ~/awx/installer

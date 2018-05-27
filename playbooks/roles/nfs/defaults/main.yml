@@ -1,0 +1,16 @@
+---
+# nfs4
+nfs_version: nfs 
+
+# account 
+nfs_group_name: nfs-share
+nfs_group_id: 50000 
+# idmap domain for nfsv4 
+nfs_base_domain: kin.com
+
+nfs_server_fqdn: "{{hostvars[groups['dcos_bootstrap'][0]].ansible_host}}"
+
+# allowed target format - hostname, doamin like *.kin.com, address 192.168.1.*
+nfs_exports: 
+  - { dir: /srv/nfs-share, target: "172.16.1.*",  options: "rw,sync,no_root_squash,no_subtree_check", mnt: /mnt/nfs-share }
+

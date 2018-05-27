@@ -1,0 +1,2 @@
+--- 
+- include: "install-{{registry_package}}.yml"

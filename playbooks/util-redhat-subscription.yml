@@ -1,0 +1,15 @@
+--- 
+- name: "Install portus docker registry"
+  gather_facts: True
+  hosts: dcos_cli[0]
+  vars_files: 
+    - pkg-desc/registry-portus.yml
+  tasks:
+    - name: Register Redhat subscription and attach automatically
+      redhat_subscription:
+        state: present
+        username: "{{redhat_subscription_user}}"
+        password: "{{redhat_subscription_pwd}}"
+        autosubscribe: true
+      when: redhat_subscription_user is defined and ansible_distribution == "RedHat"
+  environment: "{{ proxy_env }}"

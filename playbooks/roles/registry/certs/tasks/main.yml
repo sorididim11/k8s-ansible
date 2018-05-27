@@ -1,0 +1,54 @@
+---
+
+
+- name: Update /etc/hosts for registry 
+  become: yes
+  blockinfile:
+    path: /etc/hosts
+    block: |
+        {{ groups['dcos_bootstrap'][0] }} {{ service.machine_fqdn }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+  delegate_to: "{{item}}"
+  with_inventory_hostnames: 
+    - dcos_slaves:dcos_slaves_public:dcos_bootstrap
+
+
+- name: Create docker crt directory on each agent
+  become: yes
+  file:
+    path: "/etc/docker/certs.d/{{service.machine_fqdn}}"
+    state: directory
+  delegate_to: "{{item}}"
+  with_inventory_hostnames: 
+    - dcos_slaves:dcos_slaves_public:dcos_bootstrap
+
+
+- name:  Insert crt  to docker cert directory on each agent
+  become: yes
+  get_url:
+    url: "http://{{groups['dcos_bootstrap'][0]}}:{{dcos_bootstrap_port}}/auth/secrets/portus.crt"
+    dest: "/etc/docker/certs.d/{{service.machine_fqdn}}/ca.crt"
+    force: yes
+  delegate_to: "{{item}}"
+  with_inventory_hostnames:
+    - dcos_slaves:dcos_slaves_public:dcos_bootstrap
+
+
+- name: Copy portus cert to /etc/pki/ca-trust/source/anchors
+  become: yes
+  copy:
+    remote_src: yes
+    src: "/etc/docker/certs.d/{{service.machine_fqdn}}/ca.crt"
+    dest: /etc/pki/ca-trust/source/anchors/portus.crt
+    force: yes
+  delegate_to: "{{item}}"
+  with_inventory_hostnames:
+    - dcos_slaves:dcos_slaves_public:dcos_bootstrap
+
+
+- name: Update CA 
+  become: yes
+  command: update-ca-trust
+  delegate_to: "{{item}}"
+  with_inventory_hostnames:
+    - dcos_slaves:dcos_slaves_public:dcos_bootstrap

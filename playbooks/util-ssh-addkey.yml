@@ -1,0 +1,22 @@
+---
+
+#  target hosts 의 /etc/ssh/sshd_config 에서 PasswordAuthentication: yes 로 되어있어야함. sshpass 설치 필요함
+# 실행 시 --ask-pass를 명령에 추가하여 실행 -> ansible-playbook playbooks/util-ssh-key.yml --ask-pass
+
+- hosts: dcos_bootstrap
+  gather_facts: False
+  tasks:
+  - name: Generate ssh key for ansible 
+    command: 'ssh-keygen -b 2048 -t rsa -f {{ansible_key_file}} -q -N ""'
+    args: 
+      creates: "{{ansible_key_file}}"
+
+
+- hosts: all
+  gather_facts: True
+  tasks:
+  - name: Install ssh pub key to authorized_key
+    authorized_key:
+     user: "{{ansible_user_id}}" 
+     key: "{{ lookup('file', ansible_key_file + '.pub')}}" 
+     state: present

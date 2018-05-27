@@ -1,0 +1,63 @@
+---
+
+
+- name: Login into Source image registry  
+  become: yes
+  docker_login:
+    registry: "{{service.repository.url}}"
+    username: "{{service.repository.id}}"
+    password: "{{service.repository.pwd}}"
+    email: "{{service.repository.email}}"
+
+
+- name: Docker pull images from the source registry
+  become: yes
+  docker_image: 
+    name: "{{item.pull}}" 
+    pull: True
+  with_items: "{{service.repository.images}}"
+
+
+- docker_login: state=absent
+  become: yes
+
+
+- name: Log into target registry
+  become: yes
+  docker_login:
+    registry: "{{service.machine_fqdn}}"
+    username: "{{service.admin.id}}"
+    password: "{{service.admin.pwd}}"
+    reauthorize: yes
+
+
+- name: 
+  become: yes
+  shell: cat /root/.docker/config.json
+  register: docker_token_data
+
+- set_fact: 
+   docker_token: "{{docker_token_data.stdout | from_json }}"
+
+- name: Tag and push Marathon-ee to cluster registery
+  become: yes
+  shell: |
+          docker tag {{item.pull}} {{service.machine_fqdn}}/{{item.push}}
+          docker push {{service.machine_fqdn}}/{{item.push}}
+  with_items: "{{service.repository.images}}"
+  tags: registry-post
+         # docker tag {{item.pull}} {{hostvars[groups['dcos_slaves_public'][0]]['ansible_' + dcos_nic_name]['ipv4']['address']}}:{{service.options.external_port}}/{{item.push}}
+
+
+- name: Archive traget registry credential
+  become: yes
+  archive:
+    path: ~/.docker
+    dest: "{{ dcos_bootstrap_root_path }}/genconf/serve/auth/docker.tar.gz"
+    format: tar
+  tags: registry-post
+
+
+
+
+    

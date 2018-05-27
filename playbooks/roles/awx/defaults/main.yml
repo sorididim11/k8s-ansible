@@ -1,0 +1,20 @@
+---
+
+# where the database can be persisted
+postgres_data_dir: /tmp/pgdocker
+
+# web server running inside the AWX container. Defaults to 8
+host_port': 80
+
+# use_docker_compose
+use_docker_compose: True
+
+# docker-compose.yml file will be created there (default /var/lib/awx
+docker_compose_dir: /var/lib/awx
+
+# Proxy settings
+awx_use_proxy: False
+proxy:
+  http_proxy: http://web-proxy.kor.hp.com:8080
+  https_proxy: http://web-proxy.kor.hp.com:8080
+  no_proxy: 10.0.15.21
