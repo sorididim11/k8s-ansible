@@ -1,11 +1,10 @@
 --- 
 - name: "Install portus docker registry"
   gather_facts: True
-  hosts: dcos_cli[0]
-  vars_files: 
-    - pkg-desc/registry-portus.yml
+  hosts: all
   tasks:
     - name: Register Redhat subscription and attach automatically
+      become: yes
       redhat_subscription:
         state: present
         username: "{{redhat_subscription_user}}"
