@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kin-nginx-dep
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kin-nginx
+
+  template:
+    metadata:
+      labels:
+        app: kin-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.11.9
+        ports:
+        - containerPort: 80
