@@ -27,9 +27,10 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: my-config
-                key: jong
+                key: jong  
         volumeMounts:
           - name: config-volume
+            mountPath: /config
       volumes:
         - name: config-volume
           configMap:
