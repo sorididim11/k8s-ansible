@@ -13,11 +13,9 @@ spec:
     spec:
       containers:
       - name: container1
-        image: sorididim11
+        image: sorididim11/marathon-dcos-ee:v1.4.7_1.9.8
         imagePullPolicy: Always
-        command: 
-          - "/kuard"
-          - $(EXTRA_PARAM_FROM_CONFIGMAP)
+  
         volumeMounts:
           - name: my-secret-volume
             mountPath: /tls
