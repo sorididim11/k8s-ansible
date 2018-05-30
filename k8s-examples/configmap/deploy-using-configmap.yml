@@ -23,12 +23,12 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: my-config
-                key: license
+                key: my-config.txt
           - name: EXTRA_PARAM_FROM_CONFIGMAP
             valueFrom:
               configMapKeyRef:
                 name: my-config
-                key: jong  
+                key: my-config.txt
         volumeMounts:
           - name: config-volume
             mountPath: /config
