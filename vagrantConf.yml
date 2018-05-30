@@ -19,7 +19,7 @@ s1:
 s2:
    name: slave2
    ip: 10.0.25.32
-   cpus: 3 
+   cpus: 3
    mem: 3000
    type: k8s_workers
    box: generic/rhel7
@@ -38,6 +38,5 @@ boot:
    cpus: 2
    mem: 1000
    type: k8s_bootstrap
-   box: generic/rhel7
 
 

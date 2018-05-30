@@ -8,8 +8,16 @@
 
 # You MUST disable swap in order for the kubelet to work properly
 # setenforce 0
-- name: Disable swap for kubelet to work properly 
-  command:  swapoff -a
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
 
 
 # cat <<EOF > /etc/yum.repos.d/kubernetes.repo
