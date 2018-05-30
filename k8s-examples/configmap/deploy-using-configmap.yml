@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-cofmap
+spec:
+  selector:
+    app: my-config-app
+  template:
+    metadata:
+      labels:
+        app: my-config-app
+    spec
