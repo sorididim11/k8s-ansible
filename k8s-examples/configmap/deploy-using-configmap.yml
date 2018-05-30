@@ -4,7 +4,8 @@ metadata:
   name: dep-cofmap
 spec:
   selector:
-    app: my-config-app
+    matchLabels:
+      app: my-config-app
   template:
     metadata:
       labels:
