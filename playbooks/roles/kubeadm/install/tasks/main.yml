@@ -8,8 +8,16 @@
 
 # You MUST disable swap in order for the kubelet to work properly
 # setenforce 0
-- name: Disable swap for kubelet to work properly 
-  command:  swapoff -a
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
 
 
 # cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -47,6 +55,21 @@
     - net.bridge.bridge-nf-call-ip6tables
     - net.bridge.bridge-nf-call-iptables
 
+
+- name: Apply the iptables parameters to system
+  become: True
+  shell: sysctl --system
+
+
+# Kubernets Cluster uses IPTables to manage inbound and outbound traffic.
+# In order to avoid conflict, we will disable firewalld on centos 7 system. 
+# If you prefer to keep firewall enabled. 
+# I recommend allowing port 6443 to allow communication from worker node to master node.
+- name: Disable firewalld(known issue of docker) 
+  service:
+    name: firewalld.service
+    state: stopped
+    enabled: no
 
 # Make sure that the cgroup driver used by kubelet is the same as the one used by Docker. avi_customipamdnsprofile
 # docker info | grep -i cgroup
