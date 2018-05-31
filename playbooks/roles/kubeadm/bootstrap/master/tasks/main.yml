@@ -48,8 +48,8 @@
 
 
 # kube-dns, an internal helper service will not start up before a network is installed. kubeadm only supports Container Network Interface (CNI) based networks 
-# - name: Install Pod network plugin
-#   command: kubectl apply -f {{item}}
-#   with_items: "{{pod_network.plugins}}"
+- name: Install Pod network plugin
+  command: kubectl apply -f {{item}}
+  with_items: "{{pod_network.plugins}}"
 
 
