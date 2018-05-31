@@ -15,7 +15,7 @@
   become: yes
   command: |
     kubeadm init  
-           --kubernetes-version {{ kube_version }} \ 
+           --kubernetes-version v{{ kube_version }} \ 
            --token={{kube_token}} \
            --apiserver-advertise-address={{inventory_hostname}} \
            --service-cidr {{ service_cidr }} \

@@ -37,7 +37,7 @@
 
 # yum install -y kubelet kubeadm kubectl
 - name: Install kubelet kubeadm kubectl
-  yum: name={{item}} state=present
+  yum: name={{item}}-{{kube_version}} state=present
   with_items:
     - kubelet
     - kubeadm
