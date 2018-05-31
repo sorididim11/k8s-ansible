@@ -8,6 +8,7 @@
   file: path={{ network_dir }} state=directory
 
 - name: "Copy {{ cni.name }} yml file"
+  become: yes
   template: src="{{ cni.template.ds }}.j2" dest={{ network_dir }}/{{ cni.template.ds }}
 
 - name: "Check {{ cni.name }} daemonset is working"
