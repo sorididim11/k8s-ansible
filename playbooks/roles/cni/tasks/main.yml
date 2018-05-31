@@ -1,8 +1,8 @@
 ---
 
-- name: "Set fact {{ network }} cni variable"
+- name: "Set fact {{ pod_network_plugin }} cni variable"
   set_fact:
-    cni: "{{ vars[network] }}"
+    cni: "{{ vars[pod_network_plugin] }}"
 
 - name: Create Kubernetes addon directory
   file: path={{ network_dir }} state=directory
