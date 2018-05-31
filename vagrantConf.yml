@@ -3,10 +3,9 @@
 m1:
    name: master1
    ip: 10.0.25.21
-   cpus: 2
-   mem: 1000
+   cpus: 3 
+   mem: 3000
    type: k8s_masters
-   box: generic/rhel7
 
 s1:
    name: slave1
@@ -14,7 +13,6 @@ s1:
    cpus: 3
    mem: 3000
    type: k8s_workers
-   box: generic/rhel7
 
 s2:
    name: slave2
@@ -22,22 +20,13 @@ s2:
    cpus: 3 
    mem: 3000
    type: k8s_workers
-   box: generic/rhel7
 
-s3:
-   name: slave3
-   ip: 10.0.25.33
-   cpus: 3
-   mem: 3000
-   type: k8s_workers
-   box: generic/rhel7
 
 boot:
    name: bootstrap
    ip: 10.0.25.11
    cpus: 2
-   mem: 1000
+   mem: 2000
    type: k8s_bootstrap
-   box: generic/rhel7
 
 
