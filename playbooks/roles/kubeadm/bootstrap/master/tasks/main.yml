@@ -47,14 +47,19 @@
       remote_src: yes
 
 
-- file: path="{{pod_network_home}}" state=directory
-  bocome: yes
+- name: Create network plugin directory
+  become: yes
+  file: path="{{pod_network_home}}" state=directory
+ 
 
 # kube-dns, an internal helper service will not start up before a network is installed. kubeadm only supports Container Network Interface (CNI) based networks 
 - name: Generate Pod network config file
+  become: yes
   template:
     src: "kube-{{pod_network_plugin}}.yml.j2" 
     dest: "{{pod_network_home}}/{{pod_network_plugin}}.yml"
+    mode: 0755
+
 
 - name: Install Pod network plugin    
   command: "kubectl apply -f {{pod_network_home}}/{{pod_network_plugin}}.yml"
