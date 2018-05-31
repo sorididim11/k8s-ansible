@@ -47,11 +47,13 @@
       remote_src: yes
 
 
+- file: path="{{pod_network_home}}/cni" state=directory
+
 # kube-dns, an internal helper service will not start up before a network is installed. kubeadm only supports Container Network Interface (CNI) based networks 
 - name: Generate Pod network config file
   template:
     src: "kube-{{pod_network_plugin}}.yml.j2" 
-    dest: "/etc/kubernetes/network/kube-{{pod_network_plugin}}.yml"
+    dest: "/etc/kubernetes/cni/kube-{{pod_network_plugin}}.yml"
 
 - name: Install Pod network plugin    
   command: "kubectl apply -f /etc/kubernetes/network/kube-{{pod_network_plugin}}.yml"
