@@ -20,6 +20,11 @@
   register: check_net
   ignore_errors: true
 
+- name: Change permissions of .kube/config
+  become: yes
+  file: path=/etc/kubernetes/admin.conf mode=0775
+
+
 - name: "Create {{ cni.name }} network daemonset"
   when: check_net|failed
   shell: |
