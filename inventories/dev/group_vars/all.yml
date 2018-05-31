@@ -10,11 +10,11 @@ docker_storage_driver: overlay2
 kube_version: v1.10.2
 kube_token: xs417m.14zh364cyl4psodv
 
-kubeadmin_config: /etc/kubernetes/admin.conf
-network_dir: /etc/kubernetes/network
-pod_network_plugin: calico #flannel
+
+pod_network_plugin: flanel #calico
 pod_network_cidr: 10.244.0.0/16
-cni_opts: "--iface=eth1" # flannel: --iface=eth1, calico: interface=eth1
+pod_cni_opt_interface: eth1
+
 
 proxy_env:
   dummy: dummy
