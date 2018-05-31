@@ -15,7 +15,7 @@
   become: yes
   command: |
     kubeadm init  
-           --kubernetes-version {{ kube_version }} \ 
+           --kubernetes-version v{{ kube_version }} \ 
            --token={{kube_token}} \
            --apiserver-advertise-address={{inventory_hostname}} \
            --service-cidr {{ service_cidr }} \
@@ -48,8 +48,11 @@
 
 
 # kube-dns, an internal helper service will not start up before a network is installed. kubeadm only supports Container Network Interface (CNI) based networks 
-- name: Install Pod network plugin
-  command: kubectl apply -f {{item}}
-  with_items: "{{pod_network.plugins}}"
+- name: Generate Pod network config file
+  template:
+    src: "kube-{{pod_network}}.yml.j2" 
+    dest: "/etc/kubernetes/network/kube-{{pod_network}}.yml"
 
+- name: Install Pod network plugin    
+  command: "kubectl apply -f /etc/kubernetes/network/kube-{{pod_network}}.yml"
 
