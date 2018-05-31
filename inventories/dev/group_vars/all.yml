@@ -10,14 +10,8 @@ docker_storage_driver: overlay2
 kube_version: 1.10.2
 kube_token: xs417m.14zh364cyl4psodv
 
-<<<<<<< HEAD
-pod_network_plugin: flannel #flannel
-kubeadmin_config: /etc/kubernetes/admin.conf
-network_dir: /etc/kubernetes/network
-=======
 
 pod_network_plugin: flanel #calico
->>>>>>> 4eb62e7f59ea040615f697156011d3c350509bd7
 pod_network_cidr: 10.244.0.0/16
 pod_cni_opt_interface: eth1
 
