@@ -17,3 +17,5 @@ proxy_env:
   dummy: dummy
   #http_proxy: http://web-proxy.kor.hp.com:8080
   #https_proxy: http://web-proxy.kor.hp.com:8080
+
+network_dir: /etc/kubernetes/network
