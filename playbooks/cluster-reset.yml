@@ -1,0 +1,14 @@
+---
+- name: "Reset kubernetes"
+  hosts: k8s_nodes
+  tasks:
+    - name: Reset kubernetes
+      become: yes
+      command: kubeadm reset
+    
+    - name: Remove CNI interfaces
+      become: yes
+      command: "ip link delete {{item}}"
+      with_items:
+        - flannel.1 
+        - cni0
