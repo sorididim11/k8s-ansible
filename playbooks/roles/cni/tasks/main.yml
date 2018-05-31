@@ -25,5 +25,5 @@
   shell: |
     kubectl create --kubeconfig={{ kubeadmin_config }} \
                    -f {{ network_dir }}/{{ cni.template.ds }}
-  delegate_to: "{{ groups['master'][0] }}"
+  delegate_to: "{{ groups['k8s_masters'][0] }}"
   run_once: true
