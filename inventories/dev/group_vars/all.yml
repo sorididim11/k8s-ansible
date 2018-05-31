@@ -10,7 +10,8 @@ docker_storage_driver: overlay2
 kube_version: 1.10.2
 kube_token: xs417m.14zh364cyl4psodv
 
-
+kube_config_home: /etc/kubernetes
+pod_network_home: "{{kube_config_home}}/cni"
 pod_network_plugin: flannel #calico
 pod_network_cidr: 10.244.0.0/16
 pod_cni_opt_interface: eth1
