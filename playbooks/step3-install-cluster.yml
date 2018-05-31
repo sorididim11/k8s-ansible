@@ -2,6 +2,7 @@
   hosts: k8s_masters
   roles:
     - role: kubeadm/bootstrap/master
+    - { role: cni, tags: cni }
   environment: "{{ proxy_env }}"
 
 
