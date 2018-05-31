@@ -12,3 +12,8 @@ pod_network:
     cidr: 10.244.0.0/16
     plugins:
       - https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+
+
+
+service_subnet: 10.96.0
+service_cidr: "{{ service_subnet }}.0/12" 

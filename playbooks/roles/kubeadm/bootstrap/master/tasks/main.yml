@@ -14,8 +14,11 @@
 - name: Init master of kubernetes
   become: yes
   command: |
-    kubeadm init --token={{kube_token}} \
+    kubeadm init  
+           --kubernetes-version {{ kube_version }} \ 
+           --token={{kube_token}} \
            --apiserver-advertise-address={{inventory_hostname}} \
+           --service-cidr {{ service_cidr }} \
            --pod-network-cidr={{pod_network.cidr}}
 
 # to make kubectl work for your non-root user
