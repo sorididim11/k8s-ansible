@@ -7,7 +7,7 @@ docker_version: 17.03.1.ce # 17.06.2.ee.6, 17.06.2.ce
 docker_storage_driver: overlay2 
 
 # version for kubeadm, kubelet, kubectl
-kube_version: 1.10.3
+kube_version: v1.10.2
 kube_token: xs417m.14zh364cyl4psodv
 
 pod_network_plugin: flannel #flannel
