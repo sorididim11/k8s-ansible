@@ -48,6 +48,7 @@
 
 
 - file: path="{{pod_network_home}}" state=directory
+  bocome: yes
 
 # kube-dns, an internal helper service will not start up before a network is installed. kubeadm only supports Container Network Interface (CNI) based networks 
 - name: Generate Pod network config file
