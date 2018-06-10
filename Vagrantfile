@@ -88,7 +88,7 @@ Vagrant.configure('2') do |config|
           ansible.config_file = 'ansible.cfg'
           ansible.inventory_path = inventory_file
           ansible.limit = 'all'
-          ansible.playbook = 'site.yml'
+	  ansible.playbook = 'playbooks/util-install-ohmyzsh.yml'
           ansible.verbose = 'true'
         end
       end

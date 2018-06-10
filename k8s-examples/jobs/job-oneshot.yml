@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: oneshot
+  name: job-oneshot
   labels:
     who: sorididim11
 spec:
