@@ -16,7 +16,9 @@ subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = dex.auth.svc.cluster.local
-DNS.2 = loginapp.auth.svc.cluster.local
+DNS.2 = login.auth.svc.cluster.local
+DNS.3 = login.k8s.example.org
+DNS.4 = dex.k8s.example.org
 EOF
 
 openssl genrsa -out ssl/ca-key.pem 2048

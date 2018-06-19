@@ -5,7 +5,7 @@ metadata:
   namespace: auth
 data:
   config.yaml: |
-    issuer: https://dex.auth.svc.cluster.local
+    issuer: https://dex.k8s.example.org:32000/dex
     storage:
       type: kubernetes
       config:
@@ -56,12 +56,13 @@ data:
           # environment variable which should be given as the value to `bindPW`.
           bindDN: cn=admin,dc=local,dc=io
           bindPW: admin
+          usernamePrompt: Email Address
 
           # User search maps a username and password entered by a user to a LDAP entry.
           userSearch:
             # BaseDN to start the search from. It will translate to the query
             # "(&(objectClass=person)(uid=<username>))".
-            baseDN: ou=People,dc=example,dc=org
+            baseDN: ou=users,dc=local,dc=io
             # Optional filter to apply when searching the directory.
             filter: "(objectClass=posixAccount)"
             # username attribute used for comparing user entries. This will be translated
@@ -79,7 +80,7 @@ data:
           groupSearch:
             # BaseDN to start the search from. It will translate to the query
             # "(&(objectClass=group)(member=<user uid>))".
-            baseDN: ou=Groups,dc=example,dc=org
+            baseDN: ou=groups,dc=local,dc=io
             # Optional filter to apply when searching the directory.
             filter: "(objectClass=posixGroup)"
             # Following two fields are used to match a user to a group. It adds an additional
@@ -95,6 +96,6 @@ data:
     staticClients:
     - id: loginapp
       redirectURIs:
-      - 'https://loginapp:32002/callback'
+      - 'https://login.k8s.example.org:32002/callback'
       name: 'Login Application'
       secret: 4TORGiNV9M54BTk1v7dNuFSaI6hUjfjr
