@@ -13,6 +13,39 @@
         kubectl create serviceaccount --namespace kube-system tiller
         kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
         helm init --service-account tiller
+        helm repo update
        # kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}
+
+    - name: Install heapster based on helm
+      shelL: |
+        helm install stable/heapster --name=kin --namespace=kube-system --set rbac.create=true
+
+
+    - name: Install dashboard based on helm
+      shelL: |
+        helm install stable/kubernetes-dashboard --name=kin --namespace=kube-system --set rbac.create=true
+        kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: admin-user
+            namespace: kube-system
+
+          ---
+          apiVersion: rbac.authorization.k8s.io/v1beta1
+          kind: ClusterRoleBinding
+          metadata:
+            name: admin-user
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: cluster-admin
+          subjects:
+          - kind: ServiceAccount
+            name: admin-user
+            namespace: kube-system
+        EOF
+      # --horizontal-pod-autoscaler-use-rest-clients=true HPA uses new resource metrics API instead of old way of getting metrics. Setting it to false as you did works
+    - name: contoroller mnager config to use heapster API not metric-server
   environment: "{{ proxy_env }}"
  
