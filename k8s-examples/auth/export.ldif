@@ -13,7 +13,6 @@ version: 1
 dn: dc=local,dc=io
 dc: local
 o: Example Inc.
-objectclass: top
 objectclass: dcObject
 objectclass: organization
 
@@ -28,7 +27,6 @@ userpassword: {SSHA}UXhTE5B0MN/NLuXKLs//OUlBC4s7ZgLg
 # Entry 3: ou=groups,dc=local,dc=io
 dn: ou=groups,dc=local,dc=io
 objectclass: organizationalUnit
-objectclass: top
 ou: groups
 
 # Entry 4: cn=dev,ou=groups,dc=local,dc=io
@@ -38,12 +36,10 @@ gidnumber: 500
 memberuid: hkim
 memberuid: jkim
 objectclass: posixGroup
-objectclass: top
 
 # Entry 5: ou=users,dc=local,dc=io
 dn: ou=users,dc=local,dc=io
 objectclass: organizationalUnit
-objectclass: top
 ou: users
 
 
@@ -57,7 +53,6 @@ loginshell: /bin/sh
 mail: sorididim22@gmail.com
 objectclass: inetOrgPerson
 objectclass: posixAccount
-objectclass: top
 sn: kim
 uid: hkim
 uidnumber: 1001
@@ -73,7 +68,6 @@ loginshell: /bin/sh
 mail: sorididim11@gmail.com
 objectclass: inetOrgPerson
 objectclass: posixAccount
-objectclass: top
 sn: kim
 uid: jkim
 uidnumber: 1000
