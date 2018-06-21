@@ -45,8 +45,7 @@ dn: ou=users,dc=local,dc=io
 objectclass: organizationalUnit
 objectclass: top
 ou: users
-ou: Groups
-ou: People
+
 
 # Entry 6: cn=heesung kim,ou=users,dc=local,dc=io
 dn: cn=heesung kim,ou=users,dc=local,dc=io
